@@ -1,0 +1,5 @@
+node_modules/
+crash.log
+# Tài liệu mật – không đưa lên repository công khai
+Bug_Manifest.md
+evidence/

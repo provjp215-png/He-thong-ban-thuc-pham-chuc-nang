@@ -1,0 +1,20 @@
+{
+  "name": "healthy-shop",
+  "version": "1.0.0",
+  "description": "Healthy Shop - Website thương mại điện tử bán thực phẩm chức năng (đồ án Đánh giá hiệu năng)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "start:safe": "node supervisor.js",
+    "images": "node download-images.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2"
+  },
+  "license": "UNLICENSED",
+  "private": true
+}

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Healthy Shop – Thực phẩm chức năng chính hãng</title>
+  <meta name="description" content="Healthy Shop – cửa hàng trực tuyến thực phẩm chức năng chính hãng: vitamin, khoáng chất, xương khớp, tiêu hóa, làm đẹp.">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="#/" class="logo" id="logo"><span class="logo-mark">H</span><span>Healthy <b>Shop</b></span></a>
+
+      <form class="search-form" id="searchForm" role="search">
+        <input type="search" id="searchInput" name="q" placeholder="Tìm vitamin, omega-3, collagen..." autocomplete="off" aria-label="Từ khóa tìm kiếm">
+        <button type="submit" id="searchBtn" aria-label="Tìm kiếm">Tìm</button>
+      </form>
+
+      <nav class="main-nav" id="mainNav">
+        <a href="#/" data-nav="home">Sản phẩm</a>
+        <a href="#/cart" data-nav="cart" id="navCart" class="role-customer">Giỏ hàng <span class="badge" id="cartBadge">0</span></a>
+        <a href="#/orders" data-nav="orders" id="navOrders" class="role-customer">Đơn hàng</a>
+        <a href="#/admin" data-nav="admin" id="navAdmin" class="role-admin">Quản trị</a>
+        <a href="#/login" data-nav="login" id="navLogin" class="role-guest">Đăng nhập</a>
+        <a href="#/register" data-nav="register" id="navRegister" class="role-guest btn-outline">Đăng ký</a>
+        <span class="user-chip role-auth" id="userChip"></span>
+        <button type="button" class="link-btn role-auth" id="logoutBtn">Đăng xuất</button>
+      </nav>
+    </div>
+  </header>
+
+  <main id="app" class="container" aria-live="polite"></main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div>
+        <strong>Healthy Shop</strong> – Thực phẩm chức năng chính hãng<br>
+        Hotline: 1900 6868 · Email: hotro@healthyshop.vn<br>
+        268 Lý Thường Kiệt, Quận 10, TP. Hồ Chí Minh<br>
+        <span class="footer-credit">Ảnh minh họa: Pexels</span>
+      </div>
+      <p class="footer-disclaimer">Thực phẩm này không phải là thuốc, không có tác dụng thay thế thuốc chữa bệnh.</p>
+    </div>
+  </footer>
+
+  <div class="modal" id="modal" hidden>
+    <div class="modal-backdrop" data-close="1"></div>
+    <div class="modal-dialog" role="dialog" aria-modal="true">
+      <button type="button" class="modal-close" id="modalClose" data-close="1" aria-label="Đóng">×</button>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+  <div class="toast-wrap" id="toastWrap" aria-live="assertive"></div>
+
+  <script src="/app.js"></script>
+</body>
+</html>
