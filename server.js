@@ -337,7 +337,39 @@ reviews.push(
 let reviewSeq = reviews.length;
 
 const carts = new Map(); // userId -> { items: [{productId, quantity}], couponCode }
-const revokedTokens = new Set(); 
+const revokedTokens = new Set();
+// Mã phiên khởi động: mỗi lần server khởi động lại sẽ có mã mới, mọi token cấp trước đó (kể cả token đã đăng xuất) đều hết hiệu lực
+const BOOT_ID = crypto.randomBytes(8).toString('hex');
+
+// Trạng thái đếm sai mật khẩu / khóa tài khoản được lưu ra file để không bị mất khi server khởi động lại
+const LOCK_FILE = path.join(__dirname, '.runtime', 'login-locks.json');
+function loadLoginLocks() {
+  try {
+    const saved = JSON.parse(fs.readFileSync(LOCK_FILE, 'utf8'));
+    for (const u of users) {
+      const s = saved[u.email];
+      if (s) {
+        u.failedAttempts = Number(s.failedAttempts) || 0;
+        u.lockedUntil = Number(s.lockedUntil) || 0;
+      }
+    }
+  } catch (e) {
+    /* chưa có file hoặc file không hợp lệ: bắt đầu với trạng thái trống */
+  }
+}
+function saveLoginLocks() {
+  const data = {};
+  for (const u of users) {
+    if (u.failedAttempts > 0 || u.lockedUntil > Date.now()) data[u.email] = { failedAttempts: u.failedAttempts, lockedUntil: u.lockedUntil };
+  }
+  try {
+    fs.mkdirSync(path.dirname(LOCK_FILE), { recursive: true });
+    fs.writeFileSync(LOCK_FILE, JSON.stringify(data));
+  } catch (e) {
+    console.error(`[${nowISO()}] Không ghi được trạng thái khóa đăng nhập:`, e.message);
+  }
+}
+loadLoginLocks();
 const smsOutbox = [];
 const orders = [];
 let orderSeq = 0;
@@ -533,7 +565,7 @@ function authenticate(req, res, next) {
   if (!m) return sendError(res, 401, 'UNAUTHORIZED', 'Bạn cần đăng nhập để thực hiện chức năng này');
   try {
     const payload = jwt.verify(m[1], JWT_SECRET);
-    if (revokedTokens.has(payload.jti)) throw new Error('revoked');
+    if (payload.boot !== BOOT_ID || revokedTokens.has(payload.jti)) throw new Error('revoked');
     const user = users.find((u) => u.id === payload.sub);
     if (!user) throw new Error('no user');
     req.user = user;
@@ -626,12 +658,16 @@ app.post('/api/auth/login', (req, res) => {
         user.failedAttempts = 0;
         user.lockedUntil = Date.now() + LOCK_MINUTES * 60000;
       }
+      saveLoginLocks();
     }
     return sendError(res, 401, 'UNAUTHORIZED', 'Email hoặc mật khẩu không đúng');
   }
-  user.failedAttempts = 0;
+  if (user.failedAttempts > 0) {
+    user.failedAttempts = 0;
+    saveLoginLocks();
+  }
   const jti = crypto.randomUUID();
-  const token = jwt.sign({ sub: user.id, role: user.role, jti }, JWT_SECRET, { expiresIn: TOKEN_TTL_SECONDS });
+  const token = jwt.sign({ sub: user.id, role: user.role, jti, boot: BOOT_ID }, JWT_SECRET, { expiresIn: TOKEN_TTL_SECONDS });
   return res.json({ data: { token, tokenType: 'Bearer', expiresIn: TOKEN_TTL_SECONDS, user: publicUser(user) } });
 });
 

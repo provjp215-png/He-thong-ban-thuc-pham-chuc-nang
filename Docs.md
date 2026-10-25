@@ -9,8 +9,8 @@
 | Người lập | [Họ tên – MSSV] |
 | Bạn cặp (Tester) | [Họ tên – MSSV] |
 | Ngày lập | 24/10/2026 |
-| Link sản phẩm | [http://localhost:3000 – thay bằng link triển khai] |
-| Base URL API | [http://localhost:3000/api – thay bằng link triển khai] |
+| Link sản phẩm | https://he-thong-ban-thuc-pham-chuc-nang.onrender.com |
+| Base URL API | https://he-thong-ban-thuc-pham-chuc-nang.onrender.com/api |
 
 **Nội dung tài liệu**
 
@@ -136,7 +136,7 @@ Nhu cầu chăm sóc sức khỏe chủ động bằng thực phẩm chức năn
 | Độ phân giải | 360 px – 1920 px chiều ngang |
 
 ### B2.3. Giả định và ràng buộc
-- Dữ liệu được đặt lại về dữ liệu mẫu khi máy chủ khởi động lại (phục vụ kiểm thử lặp lại).
+- Dữ liệu được đặt lại về dữ liệu mẫu khi máy chủ khởi động lại (phục vụ kiểm thử lặp lại). Khi đó mọi phiên đăng nhập (token) cấp trước đều hết hiệu lực, người dùng phải đăng nhập lại; riêng trạng thái đếm sai mật khẩu và khóa tài khoản (BR-07) được lưu lại, không bị mất khi khởi động lại.
 - Múi giờ hệ thống: Asia/Ho_Chi_Minh (UTC+07:00); thời gian trả về theo ISO 8601.
 - Tiền tệ: VNĐ, số nguyên, không có phần thập phân.
 - Ví điện tử là giả lập: mã OTP thử nghiệm cố định `123456`.
@@ -261,7 +261,7 @@ Nhu cầu chăm sóc sức khỏe chủ động bằng thực phẩm chức năn
 | BR-04 | **Hủy đơn:** khách hàng chỉ hủy được đơn PENDING; quản trị viên hủy được đơn PENDING hoặc CONFIRMED. Đơn SHIPPING, DELIVERED, CANCELLED không thể hủy. |
 | BR-05 | **Tồn kho:** trừ khi đặt hàng thành công; cộng lại khi đơn bị hủy. Tồn kho không bao giờ âm và không tăng khi đặt hàng. |
 | BR-06 | **Thanh toán:** COD → PAID khi đơn DELIVERED. EWALLET phải PAID trước khi được chuyển CONFIRMED. Đơn đã PAID bị hủy → REFUNDED. |
-| BR-07 | **Tài khoản:** email duy nhất; sai mật khẩu 5 lần liên tiếp khóa 15 phút; token hết hạn sau 60 phút hoặc khi đăng xuất. |
+| BR-07 | **Tài khoản:** email duy nhất; sai mật khẩu 5 lần liên tiếp khóa 15 phút (trạng thái khóa giữ nguyên kể cả khi máy chủ khởi động lại); token hết hiệu lực sau 60 phút, khi đăng xuất, hoặc khi máy chủ khởi động lại. |
 
 ### B5.2. Mã giảm giá có sẵn (dữ liệu mẫu)
 | Mã | Loại | Giá trị | Giảm tối đa | Đơn tối thiểu | Hạn dùng |
@@ -451,15 +451,15 @@ Trạng thái thanh toán: `UNPAID → PAID` (OTP đúng hoặc COD giao thành 
 
 ## B9. Yêu cầu phi chức năng (NFR)
 
-Điều kiện đo chuẩn cho NFR hiệu năng: máy chủ chạy 1 tiến trình Node.js, dữ liệu mẫu ban đầu, đo bằng JMeter từ máy trong cùng mạng LAN, ramp-up 30 giây, thời gian giữ tải 3 phút (trừ khi ghi khác).
+Điều kiện đo chuẩn cho NFR hiệu năng: máy chủ triển khai trên Render (gói Free, 1 tiến trình Node.js), dữ liệu mẫu ban đầu, đo bằng JMeter từ máy tester qua Internet tới link sản phẩm; service đã được "đánh thức" trước khi đo (gửi 1 request `GET /api/health` và chờ phản hồi 200); ramp-up 30 giây, thời gian giữ tải 3 phút (trừ khi ghi khác). Thời gian phản hồi đã bao gồm độ trễ mạng.
 
 | Mã | Loại | Yêu cầu | Chỉ số đo được | Cách đo |
 |---|---|---|---|---|
-| NFR-01 | **Hiệu năng** – Danh sách sản phẩm | `GET /api/products` phản hồi nhanh khi tải cao | **p95 ≤ 500 ms**, tỉ lệ lỗi ≤ 1% ở **100 CCU** | JMeter Thread Group 100 threads, Aggregate Report |
+| NFR-01 | **Hiệu năng** – Danh sách sản phẩm | `GET /api/products` phản hồi nhanh khi tải cao | **p95 ≤ 1.000 ms**, tỉ lệ lỗi ≤ 1% ở **100 CCU** | JMeter Thread Group 100 threads, Aggregate Report |
 | NFR-02 | **Hiệu năng** – Tìm kiếm | `GET /api/products/search` | **p95 ≤ 1.000 ms** ở **50 CCU**; 1 người dùng: ≤ 1.000 ms | JMeter 50 threads; Postman (Response time) |
 | NFR-03 | **Hiệu năng** – Chi tiết sản phẩm | `GET /api/products/{id}` | **Throughput ≥ 50 req/s** và **p95 ≤ 800 ms** ở **50 CCU** | JMeter Summary Report (Throughput) |
 | NFR-04 | **Hiệu năng** – Đặt hàng | Luồng thêm giỏ + `POST /api/orders` | **p95 ≤ 1.500 ms**, lỗi ≤ 1% ở **30 CCU** (30 tài khoản khác nhau) | JMeter + CSV Data Set (tài khoản đăng ký sẵn) |
-| NFR-05 | **Hiệu năng** – Đăng nhập | `POST /api/auth/login` | **p95 ≤ 800 ms** ở **50 CCU** | JMeter 50 threads |
+| NFR-05 | **Hiệu năng** – Đăng nhập | `POST /api/auth/login` | **p95 ≤ 1.000 ms** ở **50 CCU** | JMeter 50 threads |
 | NFR-06 | **Hiệu năng** – Tải trang | Trang chủ | DOMContentLoaded **≤ 3 s** (mạng 10 Mbps); tổng tài nguyên trang chủ **≤ 1,5 MB** kể cả 12 ảnh sản phẩm; **≤ 25** request | Chrome DevTools / Lighthouse |
 | NFR-07 | Độ tin cậy | Hệ thống không dừng khi nhận dữ liệu sai hoặc thiếu trường tùy chọn | **100%** request sai định dạng/thiếu trường trả **4xx trong ≤ 1 s** và máy chủ vẫn phản hồi `GET /api/health`; uptime **≥ 99%** trong tuần 6–14 | Postman/Newman (negative test), kiểm tra health sau mỗi request |
 | NFR-08 | Bảo mật – Phân quyền | Kiểm soát truy cập theo ma trận B3 | **100%** API `/api/admin/*` trả **403** với CUSTOMER, **401** khi thiếu/sai token; token hết hạn sau **60 phút** | Postman: gọi từng API admin với token khách hàng |
@@ -500,11 +500,11 @@ Trạng thái thanh toán: `UNPAID → PAID` (OTP đúng hoặc COD giao thành 
 
 | Mục | Nội dung |
 |---|---|
-| Base URL | `http://localhost:3000/api` [thay bằng link triển khai, vd `https://<ten-app>.onrender.com/api`] — trong Postman đặt biến `{{baseUrl}}` |
+| Base URL | `https://he-thong-ban-thuc-pham-chuc-nang.onrender.com/api` (chạy trên máy: `http://localhost:3000/api`) — trong Postman đặt biến `{{baseUrl}}` |
 | Định dạng dữ liệu | JSON, mã hoá UTF-8. Header: `Content-Type: application/json` (với request có body) |
 | Cơ chế xác thực | Bearer token (JWT, HS256) trong header `Authorization: Bearer <token>` |
 | Cách lấy token | Gọi `POST /api/auth/login`, lấy trường `data.token` trong response |
-| Thời hạn token | 60 phút (`expiresIn = 3600` giây); bị thu hồi ngay khi gọi `POST /api/auth/logout` |
+| Thời hạn token | 60 phút (`expiresIn = 3600` giây); bị thu hồi ngay khi gọi `POST /api/auth/logout`; mọi token cũ hết hiệu lực khi máy chủ khởi động lại (cần đăng nhập lại để lấy token mới) |
 | Định dạng ngày giờ | ISO 8601, múi giờ +07:00, ví dụ `2026-10-24T19:09:01+07:00` |
 | Phân trang | Tham số `page` (bắt đầu từ 1), `size` (tối đa 50). Response có `pagination: { page, size, total, totalPages }` |
 | Tiền tệ | VNĐ, số nguyên |
