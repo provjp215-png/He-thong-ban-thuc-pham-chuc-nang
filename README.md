@@ -9,7 +9,6 @@ supervisor.js      Tự khởi động lại server khi bị dừng (dùng khi d
 image-sources.js   Danh sách ảnh minh họa sản phẩm (Pexels)
 download-images.js Tải ảnh sản phẩm về public/images
 public/            Frontend HTML/CSS/JS thuần (index.html, style.css, app.js)
-Docs.md            URD + SRS + Tài liệu API
 package.json
 ```
 
