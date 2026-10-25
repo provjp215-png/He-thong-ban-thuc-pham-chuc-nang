@@ -1,6 +1,7 @@
 # Healthy Shop – Website bán thực phẩm chức năng
 
-Đồ án học phần Đánh giá hiệu năng – Phần 1 (Chủ hệ thống).
+Dự án học phần Đánh giá hiệu năng – Phần 1 (Chủ hệ thống).
+Link web: https://he-thong-ban-thuc-pham-chuc-nang.onrender.com/
 
 ## Cấu trúc
 ```
@@ -31,4 +32,3 @@ npm run images       # (khuyến nghị, chạy 1 lần) tải 21 ảnh sản ph
 
 OTP ví điện tử thử nghiệm: `123456`. Dữ liệu lưu trong bộ nhớ và trở về dữ liệu mẫu mỗi khi khởi động lại.
 
-Ảnh sản phẩm: nếu chưa chạy `npm run images`, trình duyệt tải ảnh trực tiếp từ Pexels (cần Internet). Sau khi tải, ảnh được phục vụ từ chính server. Ảnh lỗi sẽ tự hiển thị ảnh thay thế.
