@@ -19,10 +19,10 @@ const PEXELS_IDS = {
   P008: 3683048,  // Viên nén trắng trên nền xanh – Kẽm
   P009: 7615616,  // Lá bạch quả và viên nang – Ginkgo
   P010: 1556669,  // Phụ nữ mang thai – Sắt + Acid folic
-  P011: 75461,    // Viên uống buổi tối – Magie B6
+  P011: 4371873,  // Viên nén trắng trong cốc thủy tinh – Magie B6
   P012: 7615577,  // Viên nang trên nền xanh lá – Tảo Spirulina
   P013: 6220708,  // Bột nghệ – Curcumin
-  P014: 31251476, // Tách trà xanh matcha – Chiết xuất trà xanh
+  P014: 5946652,  // Bát trà xanh matcha trên tay – Chiết xuất trà xanh
   P015: 7605733,  // Các loại viên uống nhìn từ trên – Vitamin tổng hợp
   P016: 3873201,  // Người đang uống viên uống – Melatonin
   P017: 3683106,  // Viên nén trắng trên nền vàng – Lutein
