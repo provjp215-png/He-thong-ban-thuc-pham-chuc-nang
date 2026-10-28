@@ -31,5 +31,5 @@ npm run images       # (khuyến nghị, chạy 1 lần) tải 21 ảnh sản ph
 | Khách hàng | customer01@healthyshop.vn | Test@123 |
 | Khách hàng | customer02@healthyshop.vn | Test@123 |
 
-OTP ví điện tử thử nghiệm: `123456`. Dữ liệu lưu trong bộ nhớ và trở về dữ liệu mẫu mỗi khi khởi động lại.
+
 
